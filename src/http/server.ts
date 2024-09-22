@@ -6,9 +6,10 @@ import {
 } from 'fastify-type-provider-zod'
 
 import { createGoalRoute } from './routes/create-goal'
-import { createCompletionRoute } from './routes/create-competion'
+import { createCompletionRoute } from './routes/create-completion'
 import { getPendingGoalsRoute } from './routes/get-pending-goals'
 import { getWeekSummaryRoute } from './routes/get-week-summary'
+import { deleteCompletionRoute } from './routes/delete-completion'
 import fastifyCors from '@fastify/cors'
 import { env } from '../env'
 
@@ -25,6 +26,7 @@ app.register(createGoalRoute)
 app.register(createCompletionRoute)
 app.register(getPendingGoalsRoute)
 app.register(getWeekSummaryRoute)
+app.register(deleteCompletionRoute)
 
 app
   .listen({
