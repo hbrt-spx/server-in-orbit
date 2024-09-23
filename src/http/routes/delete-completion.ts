@@ -8,15 +8,15 @@ export const deleteCompletionRoute: FastifyPluginAsyncZod = async app => {
     {
       schema: {
         body: z.object({
-          id: z.string(),
+          completionId: z.string(),
         }),
       },
     },
     async request => {
-      const { id } = request.body
+      const { completionId } = request.body
 
       await deleteGoalCompletion({
-        id,
+        completionId,
       })
     }
   )
