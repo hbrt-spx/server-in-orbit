@@ -7,6 +7,14 @@ export async function getWeekSummary() {
   const fristDayOfWeek = dayjs().startOf('week').toDate()
   const lastDayOfWeek = dayjs().endOf('week').toDate()
 
+  const completionIdData = db.$with('goals_complete_data').as(
+    db
+      .select({
+        id: goalCompletions.id,
+      })
+      .from(goalCompletions)
+  )
+
   const goalsCreatedUpToWeek = db.$with('goals_created_up_to_week').as(
     db
       .select({
@@ -25,7 +33,6 @@ export async function getWeekSummary() {
         id: goals.id,
         title: goals.title,
         completedAt: goalCompletions.createdAt,
-        completionId: goalCompletions.id,
         completedAtDate: sql`
         DATE(${goalCompletions.createdAt})
         `.as('completedAtDate'),
@@ -50,8 +57,8 @@ export async function getWeekSummary() {
             JSON_BUILD_OBJECT(
               'id', ${goalsCompletedInWeek.id},
               'title', ${goalsCompletedInWeek.title},
-              'completedAt', ${goalsCompletedInWeek.completedAt},
-              'completionId', ${goalsCompletedInWeek.completionId}
+              'completedAt', ${goalsCompletedInWeek.completedAt}
+              'completionId', ${completionIdData}
             )
           )
           `.as('completions'),
@@ -72,7 +79,12 @@ export async function getWeekSummary() {
   >
 
   const result = await db
-    .with(goalsCreatedUpToWeek, goalsCompletedInWeek, goalsCompletedByWeekDay)
+    .with(
+      goalsCreatedUpToWeek,
+      goalsCompletedInWeek,
+      goalsCompletedByWeekDay,
+      completionIdData
+    )
     .select({
       completed: sql`(SELECT COUNT(*) FROM ${goalsCompletedInWeek})`.mapWith(
         Number
