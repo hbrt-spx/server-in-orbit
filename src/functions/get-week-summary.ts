@@ -80,7 +80,12 @@ export async function getWeekSummary() {
   >
 
   const result = await db
-    .with(goalsCreatedUpToWeek, goalsCompletedInWeek, goalsCompletedByWeekDay)
+    .with(
+      goalsCreatedUpToWeek,
+      goalsCompletedInWeek,
+      goalsCompletedByWeekDay,
+      completionIds
+    )
     .select({
       completed: sql`(SELECT COUNT(*) FROM ${goalsCompletedInWeek})`.mapWith(
         Number
