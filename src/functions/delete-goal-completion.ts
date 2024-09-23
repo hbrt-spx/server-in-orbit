@@ -3,15 +3,15 @@ import { db } from '../db'
 import { goalCompletions } from '../db/schema'
 
 interface DeleteGoalCompletionRequest {
-  goalId: string
+  id: string
 }
 
 export async function deleteGoalCompletion({
-  goalId,
+  id,
 }: DeleteGoalCompletionRequest) {
   const deletedGoalCompletion = await db
     .delete(goalCompletions)
-    .where(eq(goalCompletions.goalId, goalId))
+    .where(eq(goalCompletions.id, id))
 
   return {
     deletedGoalCompletion,
