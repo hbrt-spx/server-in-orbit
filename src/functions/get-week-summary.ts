@@ -7,14 +7,6 @@ export async function getWeekSummary() {
   const fristDayOfWeek = dayjs().startOf('week').toDate()
   const lastDayOfWeek = dayjs().endOf('week').toDate()
 
-  const goalCompletionsData = db.$with('goals_completed').as(
-    db
-      .select({
-        id: goalCompletions.id,
-      })
-      .from(goalCompletions)
-  )
-
   const goalsCreatedUpToWeek = db.$with('goals_created_up_to_week').as(
     db
       .select({
@@ -33,6 +25,7 @@ export async function getWeekSummary() {
         id: goals.id,
         title: goals.title,
         completedAt: goalCompletions.createdAt,
+        goalCompletionId: goalCompletions.id,
         completedAtDate: sql`
         DATE(${goalCompletions.createdAt})
         `.as('completedAtDate'),
@@ -58,7 +51,7 @@ export async function getWeekSummary() {
               'id', ${goalsCompletedInWeek.id},
               'title', ${goalsCompletedInWeek.title},
               'completedAt', ${goalsCompletedInWeek.completedAt},
-              'goalCompletionId', ${goalCompletionsData.id}
+              'goalCompletionId', ${goalsCompletedInWeek.goalCompletionId}
             )
           )
           `.as('completions'),
