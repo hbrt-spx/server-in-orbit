@@ -7,7 +7,7 @@ export async function getWeekSummary() {
   const fristDayOfWeek = dayjs().startOf('week').toDate()
   const lastDayOfWeek = dayjs().endOf('week').toDate()
 
-  const goalCompletionsData = await db.$with('goals_completed').as(
+  const goalCompletionsData = db.$with('goals_completed').as(
     db
       .select({
         id: goalCompletions.id,
