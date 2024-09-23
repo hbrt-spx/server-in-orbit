@@ -12,6 +12,9 @@ export async function deleteGoalCompletion({
   const deletedGoalCompletion = await db
     .delete(goalCompletions)
     .where(eq(goalCompletions.id, completionId))
+    .returning({
+      completionId: goalCompletions.id,
+    })
 
   return {
     deletedGoalCompletion,
