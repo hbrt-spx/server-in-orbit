@@ -22,7 +22,7 @@ export async function getWeekSummary() {
   const goalsCompletedInWeek = db.$with('goal_completed_in_week').as(
     db
       .select({
-        id: goals.id,
+        id: goalCompletions.id,
         title: goals.title,
         completedAt: goalCompletions.createdAt,
         completedAtDate: sql`
