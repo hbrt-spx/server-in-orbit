@@ -19,15 +19,6 @@ export async function getWeekSummary() {
       .where(lte(goals.createdAt, lastDayOfWeek))
   )
 
-  const completionIds = db.$with('completion_ids').as(
-    db
-      .select({
-        id: goalCompletions.id,
-        goalId: goalCompletions.goalId,
-      })
-      .from(goalCompletions)
-  )
-
   const goalsCompletedInWeek = db.$with('goal_completed_in_week').as(
     db
       .select({
@@ -58,8 +49,7 @@ export async function getWeekSummary() {
             JSON_BUILD_OBJECT(
               'id', ${goalsCompletedInWeek.id},
               'title', ${goalsCompletedInWeek.title},
-              'completedAt', ${goalsCompletedInWeek.completedAt},
-              'completionId', ${completionIds.id}
+              'completedAt', ${goalsCompletedInWeek.completedAt}
             )
           )
           `.as('completions'),
@@ -75,17 +65,11 @@ export async function getWeekSummary() {
       id: string
       title: string
       completedAt: string
-      completionId: string
     }[]
   >
 
   const result = await db
-    .with(
-      goalsCreatedUpToWeek,
-      goalsCompletedInWeek,
-      goalsCompletedByWeekDay,
-      completionIds
-    )
+    .with(goalsCreatedUpToWeek, goalsCompletedInWeek, goalsCompletedByWeekDay)
     .select({
       completed: sql`(SELECT COUNT(*) FROM ${goalsCompletedInWeek})`.mapWith(
         Number
