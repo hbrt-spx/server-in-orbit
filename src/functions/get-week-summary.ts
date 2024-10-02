@@ -31,13 +31,13 @@ export async function getWeekSummary() {
       })
       .from(goalCompletions)
       .innerJoin(goals, eq(goals.id, goalCompletions.goalId))
-      .orderBy(desc(goalCompletions.createdAt))
       .where(
         and(
           gte(goalCompletions.createdAt, fristDayOfWeek),
           lte(goalCompletions.createdAt, lastDayOfWeek)
         )
       )
+      .orderBy(desc(goalCompletions.createdAt))
   )
 
   const goalsCompletedByWeekDay = db.$with('goals_completed_by_week_day').as(
